@@ -1,5 +1,10 @@
 import React from 'react'
-
+import { Button } from 'antd-mobile'
 export default function Login() {
-    return <div>登录页</div>
+    return (
+        <div>
+            <Button color='primary'>按钮</Button>
+            <div className='box'></div>
+        </div>
+    )
 }
