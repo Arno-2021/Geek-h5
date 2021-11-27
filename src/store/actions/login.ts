@@ -15,3 +15,8 @@ export const login = (data: LoginForm): RootThunkAction => {
         })
     }
 }
+export const getCode = (mobile: number): RootThunkAction => {
+    return dispatch => {
+        axios.get(`/sms/codes/${mobile}`)
+    }
+}

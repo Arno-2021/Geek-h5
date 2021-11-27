@@ -9,7 +9,11 @@ export type RootThunkAction = ThunkAction<void, RootStore, unknown, RootAction>
 
 // LoginAction
 
-export type LoginAction = {
-    type: 'login/login'
-    payload: Token
-}
+export type LoginAction =
+    | {
+          type: 'login/login'
+          payload: Token
+      }
+    | {
+          type: 'login/getCode'
+      }

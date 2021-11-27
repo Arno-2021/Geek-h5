@@ -1,13 +1,34 @@
 import { LoginForm } from '@/types/data'
-import { NavBar, Form, List, Input, Button } from 'antd-mobile'
+import { NavBar, Form, List, Input, Button, Toast } from 'antd-mobile'
 import { useHistory } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import styles from './index.module.scss'
-import { login } from '@/store/actions/login'
+import { getCode, login } from '@/store/actions/login'
+import { useEffect, useRef, useState } from 'react'
+
 export default function Login() {
     const histroy = useHistory()
     const [form] = Form.useForm()
+    const [countDown, setCountDown] = useState(0)
+    const timeRef = useRef(-1)
     const dispatch = useDispatch()
+    const sendCode = async () => {
+        // const error = form.getFieldError('mobile')
+        const mobile = form.getFieldValue('mobile')
+        await dispatch(getCode(mobile))
+        setCountDown(5)
+        timeRef.current = window.setInterval(() => {
+            setCountDown(time => time - 1)
+        }, 1000)
+    }
+    useEffect(() => {
+        if (countDown === 0) {
+            clearInterval(timeRef.current)
+        }
+    }, [countDown])
+    useEffect(() => {
+        return () => clearInterval(timeRef.current)
+    }, [])
     return (
         <div className={styles.root}>
             <NavBar onBack={() => histroy.go(-1)}></NavBar>
@@ -23,9 +44,16 @@ export default function Login() {
                         code: '246810',
                     }}
                     validateTrigger={['onBlur', 'onChange']}
-                    onFinish={(values: LoginForm) => {
-                        dispatch(login(values))
-                        histroy.push('/home')
+                    onFinish={async (values: LoginForm) => {
+                        await dispatch(login(values))
+                        Toast.show({
+                            icon: 'success',
+                            content: '登录成功',
+                            duration: 600,
+                            afterClose: () => {
+                                histroy.push('/home')
+                            },
+                        })
                     }}
                 >
                     <Form.Item
@@ -46,7 +74,13 @@ export default function Login() {
                     </Form.Item>
                     <List.Item
                         className='login-code-extra'
-                        extra={<span className='code-extra'>发送验证码</span>}
+                        extra={
+                            <span className='code-extra' onClick={sendCode}>
+                                {countDown === 0
+                                    ? '发送验证码'
+                                    : `${countDown}秒后重新发送`}
+                            </span>
+                        }
                     >
                         <Form.Item
                             className='login-item'
