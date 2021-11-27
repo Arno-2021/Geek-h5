@@ -1,8 +1,13 @@
+import { LoginForm } from '@/types/data'
 import { NavBar, Form, List, Input, Button } from 'antd-mobile'
 import { useHistory } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
 import styles from './index.module.scss'
+import { login } from '@/store/actions/login'
 export default function Login() {
     const histroy = useHistory()
+    const [form] = Form.useForm()
+    const dispatch = useDispatch()
     return (
         <div className={styles.root}>
             <NavBar onBack={() => histroy.go(-1)}></NavBar>
@@ -10,7 +15,19 @@ export default function Login() {
             <div className='login-form'>
                 <h2 className='title'>账号登录</h2>
 
-                <Form validateTrigger={['onBlur', 'onChange']}>
+                <Form
+                    form={form}
+                    autoComplete='off'
+                    initialValues={{
+                        mobile: '13511111111',
+                        code: '246810',
+                    }}
+                    validateTrigger={['onBlur', 'onChange']}
+                    onFinish={(values: LoginForm) => {
+                        dispatch(login(values))
+                        histroy.push('/home')
+                    }}
+                >
                     <Form.Item
                         className='login-item'
                         name='mobile'
@@ -46,7 +63,12 @@ export default function Login() {
                         </Form.Item>
                     </List.Item>
                     <Form.Item>
-                        <Button color='primary' block className='login-submit'>
+                        <Button
+                            color='primary'
+                            block
+                            className='login-submit'
+                            type='submit'
+                        >
                             登录
                         </Button>
                     </Form.Item>

@@ -1,8 +1,8 @@
 import classNames from 'classnames'
 type Props = {
     type: string
-    className: string
-    onClick: () => void
+    className?: string
+    onClick?: () => void
 }
 export default function Icon({ type, className, onClick }: Props) {
     return (
