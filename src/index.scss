@@ -1,3 +1,4 @@
+@import '~@scss/hairline.scss';
 * {
     margin: 0;
     padding: 0;
@@ -20,4 +21,16 @@ body,
     --adm-border-color: #eeeeee;
     --adm-font-size-main: 13px;
     --adm-color-text: #333333;
+}
+.box {
+    @include hairline(all, #000);
+    width: 200px;
+    height: 200px;
+}
+.icon {
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.15em;
+    fill: currentColor;
+    overflow: hidden;
 }
