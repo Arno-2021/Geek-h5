@@ -1,6 +1,6 @@
-import { getProfile } from '@/store/actions/profile'
+import { getUserProfile } from '@/store/actions/profile'
 import { RootStore } from '@/types/store'
-import { Button, List, DatePicker, NavBar } from 'antd-mobile'
+import { Button, List, NavBar } from 'antd-mobile'
 import classNames from 'classnames'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -13,9 +13,9 @@ const Item = List.Item
 const ProfileEdit = () => {
     const history = useHistory()
     const dispatch = useDispatch()
-    const { userProfile } = useSelector((state: RootStore) => state.profile)
+    const { userDetail } = useSelector((state: RootStore) => state.profile)
     useEffect(() => {
-        dispatch(getProfile())
+        dispatch(getUserProfile())
     }, [dispatch])
     return (
         <div className={styles.root}>
@@ -40,7 +40,7 @@ const ProfileEdit = () => {
                                     <img
                                         width={24}
                                         height={24}
-                                        src={userProfile.photo}
+                                        src={userDetail.photo}
                                         alt=''
                                     />
                                 </span>
@@ -49,14 +49,21 @@ const ProfileEdit = () => {
                         >
                             头像
                         </Item>
-                        <Item arrow extra={userProfile.name}>
+                        <Item arrow extra={userDetail.name}>
                             昵称
                         </Item>
                         <Item
                             arrow
                             extra={
-                                <span className={classNames('intro', 'normal')}>
-                                    {'未填写'}
+                                <span
+                                    className={classNames(
+                                        'intro',
+                                        userDetail.intro && 'normal'
+                                    )}
+                                >
+                                    {userDetail.intro
+                                        ? userDetail.intro
+                                        : '未填写'}
                                 </span>
                             }
                         >
@@ -65,21 +72,16 @@ const ProfileEdit = () => {
                     </List>
 
                     <List className='profile-list'>
-                        <Item arrow extra={'男'}>
+                        <Item
+                            arrow
+                            extra={userDetail.gender === 0 ? '男' : '女'}
+                        >
                             性别
                         </Item>
-                        <Item arrow extra={'1999-9-9'}>
+                        <Item arrow extra={userDetail.birthday}>
                             生日
                         </Item>
                     </List>
-
-                    <DatePicker
-                        visible={false}
-                        value={new Date()}
-                        title='选择年月日'
-                        min={new Date(1900, 0, 1, 0, 0, 0)}
-                        max={new Date()}
-                    />
                 </div>
 
                 <div className='logout'>

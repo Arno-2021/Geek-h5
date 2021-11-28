@@ -1,11 +1,13 @@
-import { User } from '@/types/data'
+import { User, UserDetail } from '@/types/data'
 import { ProfileAction } from '@/types/store'
 
 type ProfileType = {
     userProfile: User
+    userDetail: UserDetail
 }
 const initVal = {
     userProfile: {},
+    userDetail: {},
 } as ProfileType
 const profileRuducer = (
     state = initVal,
@@ -15,6 +17,12 @@ const profileRuducer = (
         return {
             ...state,
             userProfile: action.payload,
+        }
+    }
+    if (action.type === 'profile/getUserProfile') {
+        return {
+            ...state,
+            userDetail: action.payload,
         }
     }
     return state

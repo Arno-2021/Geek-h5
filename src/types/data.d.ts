@@ -21,3 +21,12 @@ export type User = {
     fans_count: number
     like_count: number
 }
+export type UserDetail = {
+    id: string
+    name: string
+    photo: string
+    mobile: string
+    gender: number
+    birthday: string
+    intro: string
+}
