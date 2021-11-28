@@ -3,7 +3,7 @@ import { LoginAction } from '@/types/store'
 import { getToken } from '@/utils/storage'
 
 const initVal: Token = getToken()
-function loginReducer(state = initVal, action: LoginAction) {
+function loginReducer(state = initVal, action: LoginAction): Token {
     if (action.type === 'login/login') {
         return action.payload
     }
