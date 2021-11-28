@@ -2,18 +2,12 @@ import { Link, useHistory } from 'react-router-dom'
 
 import Icon from '@/components/Icon'
 import styles from './index.module.scss'
-import { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useProfile } from '@/utils/hooks'
 import { getProfile } from '@/store/actions/profile'
-import { RootStore } from '@/types/store'
 
 const Profile = () => {
     const history = useHistory()
-    const dispatch = useDispatch()
-    const { userProfile } = useSelector((state: RootStore) => state.profile)
-    useEffect(() => {
-        dispatch(getProfile())
-    }, [dispatch])
+    const { userProfile } = useProfile(getProfile, 'profile')
     return (
         <div className={styles.root}>
             <div className='profile'>

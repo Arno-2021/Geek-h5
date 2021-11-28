@@ -1,22 +1,44 @@
 import { getUserProfile } from '@/store/actions/profile'
-import { RootStore } from '@/types/store'
-import { Button, List, NavBar } from 'antd-mobile'
+import { useProfile } from '@/utils/hooks'
+import { Button, List, NavBar, Popup } from 'antd-mobile'
 import classNames from 'classnames'
-import { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useState } from 'react'
 import { useHistory } from 'react-router-dom'
-
 import styles from './index.module.scss'
-
+import EditInput from './EditInput'
+import EditList from './EditList'
 const Item = List.Item
-
+type InputType = {
+    visible: boolean
+    type: '' | 'name' | 'intro'
+}
+type ListType = {
+    visible: boolean
+    type: '' | 'gender' | 'photo'
+}
 const ProfileEdit = () => {
+    const [hideInput, setHideInput] = useState<InputType>({
+        visible: false,
+        type: '',
+    })
+    const [hideList, setHideList] = useState<ListType>({
+        visible: false,
+        type: '',
+    })
     const history = useHistory()
-    const dispatch = useDispatch()
-    const { userDetail } = useSelector((state: RootStore) => state.profile)
-    useEffect(() => {
-        dispatch(getUserProfile())
-    }, [dispatch])
+    const { userDetail } = useProfile(getUserProfile, 'profile')
+    const hiddenInput = () => {
+        setHideInput({
+            type: '',
+            visible: false,
+        })
+    }
+    const hiddenList = () => {
+        setHideList({
+            type: '',
+            visible: false,
+        })
+    }
     return (
         <div className={styles.root}>
             <div className='content'>
@@ -45,11 +67,23 @@ const ProfileEdit = () => {
                                     />
                                 </span>
                             }
+                            onClick={() =>
+                                setHideList({ type: 'photo', visible: true })
+                            }
                             arrow
                         >
                             头像
                         </Item>
-                        <Item arrow extra={userDetail.name}>
+                        <Item
+                            arrow
+                            extra={userDetail.name}
+                            onClick={() =>
+                                setHideInput({
+                                    type: 'name',
+                                    visible: true,
+                                })
+                            }
+                        >
                             昵称
                         </Item>
                         <Item
@@ -66,6 +100,12 @@ const ProfileEdit = () => {
                                         : '未填写'}
                                 </span>
                             }
+                            onClick={() =>
+                                setHideInput({
+                                    type: 'intro',
+                                    visible: true,
+                                })
+                            }
                         >
                             简介
                         </Item>
@@ -75,6 +115,9 @@ const ProfileEdit = () => {
                         <Item
                             arrow
                             extra={userDetail.gender === 0 ? '男' : '女'}
+                            onClick={() =>
+                                setHideList({ type: 'gender', visible: true })
+                            }
                         >
                             性别
                         </Item>
@@ -88,6 +131,34 @@ const ProfileEdit = () => {
                     <Button className='btn'>退出登录</Button>
                 </div>
             </div>
+            <Popup
+                visible={hideInput.visible}
+                bodyStyle={{ width: '100vw' }}
+                position='right'
+                destroyOnClose
+            >
+                <EditInput
+                    hiddenInput={hiddenInput}
+                    type={hideInput.type}
+                    msg={
+                        hideInput.type === 'name'
+                            ? userDetail.name
+                            : userDetail.intro
+                    }
+                ></EditInput>
+            </Popup>
+            <Popup
+                visible={hideList.visible}
+                destroyOnClose
+                onMaskClick={() => {
+                    hiddenList()
+                }}
+            >
+                <EditList
+                    type={hideList.type}
+                    hiddenList={hiddenList}
+                ></EditList>
+            </Popup>
         </div>
     )
 }

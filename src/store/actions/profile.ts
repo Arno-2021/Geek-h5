@@ -19,3 +19,9 @@ export const getUserProfile = (): RootThunkAction => {
         })
     }
 }
+export const editProfile = (key: string, value: string): RootThunkAction => {
+    return async dispatch => {
+        await axios.patch('/user/profile', { [key]: value })
+        dispatch(getUserProfile())
+    }
+}
